@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -85,7 +87,7 @@ public abstract class GUI {
 	 * @param tripFile
 	 *            the trips.txt file
 	 */
-	protected abstract void onLoad(File stopFile, File tripFile);
+	protected abstract void onLoad(File stopFile, File tripFile) throws IOException;
 
 	// here are some useful methods you'll need.
 
@@ -213,7 +215,11 @@ public abstract class GUI {
 								"Directory does not contain correct files",
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						onLoad(stopFile, tripFile);
+						try {
+							onLoad(stopFile, tripFile);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						redraw();
 					}
 				}
