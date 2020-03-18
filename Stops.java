@@ -1,27 +1,31 @@
-import java.awt.Point;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
+public class Stops {
+
+    private String ID;
+    private String name;
+    private double lat;
+    private double longi;
+    private Location loc;
+
+    ArrayList<Stops> Outgoing = new ArrayList<>();
+    ArrayList<Stops> Incoming = new ArrayList<>();
 
 
-public class Stops extends Location {
 
-    public double x;
-    public double y;
-
-    public Stops(double x, double y) {
-        super(x,y);
-        this.x = x;
-        this.y = y;
+    public Stops(String id, String name, double lat, double longi){
+        this.ID = id;
+        this.name = name;
+        this.loc = loc;
+        this.lat = lat;
+        this.longi = longi;
     }
 
-    public stopPoint(double x, double y) {
+    public String getID(){
+     return ID;
+    }
 
-
+    public ArrayList getOutgoing(){
+        return Outgoing;
     }
 }

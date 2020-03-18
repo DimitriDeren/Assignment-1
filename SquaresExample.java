@@ -27,7 +27,6 @@ public class SquaresExample extends GUI {
 		makeSquares();
 	}
 
-
 	private void makeSquares() {
 		squares.clear();
 
