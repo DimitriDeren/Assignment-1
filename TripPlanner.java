@@ -13,14 +13,21 @@ public class TripPlanner extends GUI{
     private HashSet<Connections> allConnections = new HashSet<>();
     Location origin = new Location(-24,19);
 
+    double scale = 10;
+    double ZOOM_FACTOR = 1.5;
+
+
+
+
+
 
     protected void redraw(Graphics g) {
         for(Stops s : stopSet){
-            s.draw(g, origin, 10);
+            s.draw(g, origin, scale);
         }
 
         for(Connections c : allConnections){
-           c.draw(g, origin, 10);
+           c.draw(g, origin, scale);
         }
 
         System.out.println(origin.x);
@@ -52,6 +59,23 @@ public class TripPlanner extends GUI{
      * Move enum is passed, representing the button clicked by the user.
      */
     protected void onMove(Move m) {
+        scale /= ZOOM_FACTOR;
+        Dimension screenSize = getDrawingAreaDimension();
+        double screenWidth = screenSize.getWidth();
+        double screenHeight = screenSize.getHeight();
+
+        Location topLeft = new Location;
+        Location topRight = new Location;
+        Location botLeft = new Location;
+        Location botRight = new Location;
+
+
+        topLeft = topLeft.newFromLatLon(0,0);
+        topRight = topRight.newFromLatLon(screenWidth, 0);
+        botLeft = botLeft.newFromLatLon(0, screenHeight);
+        botRight = botRight.newFromLatLon(screenWidth, screenHeight);
+
+
         switch(m){
 
             case SOUTH:
@@ -76,6 +100,8 @@ public class TripPlanner extends GUI{
         }
 
         if(m == Move.ZOOM_IN){
+            scale *= ZOOM_FACTOR;
+            width (height) /= ZOOM_FACTOR
 
         }
 
