@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Stops {
@@ -12,6 +13,9 @@ public class Stops {
     ArrayList<Stops> Incoming = new ArrayList<>();
 
 
+    private static final int SQUARE_SIZE = 3;
+
+
 
     public Stops(String id, String name, double latitude, double longitude){
         this.ID = id;
@@ -19,6 +23,7 @@ public class Stops {
         this.lat = latitude;
         this.longi = longitude;
         this.loc = Location.newFromLatLon(lat, longi);
+
     }
 
     public String getID(){
@@ -30,4 +35,12 @@ public class Stops {
     }
 
     public Location getLocation() {return loc;}
+
+
+    public void draw(Graphics g, Location origin, double scale) {
+        g.setColor(Color.red);
+        g.fillRect(loc.asPoint(origin, 10).x, loc.asPoint(origin, 10).y, SQUARE_SIZE, SQUARE_SIZE);
+    }
+
+
 }

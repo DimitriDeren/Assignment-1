@@ -11,22 +11,25 @@ public class TripPlanner extends GUI{
     private HashSet<Stops> stopSet = new HashSet<>();
     private HashSet<Trips> trips = new HashSet<>();
     private HashSet<Connections> allConnections = new HashSet<>();
-
-    private static final int SQUARE_SIZE = 30;
-
+    Location origin = new Location(-24,19);
 
 
     protected void redraw(Graphics g) {
         for(Stops s : stopSet){
-            draw(g, s.getLocation(), 1);
+            s.draw(g, origin, 10);
         }
+
+        for(Connections c : allConnections){
+           c.draw(g, origin, 10);
+        }
+
+        System.out.println(origin.x);
+        System.out.println(origin.y);
     }
 
     //use a for loop for all the stops which calls a draw method within the stops class for each one, pass in origin, scale and graphics object
-    public void draw(Graphics g, Location origin, double scale) {
-        g.setColor(Color.red);
-       g.fillRect((int)origin.x, (int)origin.y, SQUARE_SIZE, SQUARE_SIZE);
-    }
+
+
 
     /**
      * Is called when the mouse is clicked (actually, when the mouse is
@@ -49,6 +52,37 @@ public class TripPlanner extends GUI{
      * Move enum is passed, representing the button clicked by the user.
      */
     protected void onMove(Move m) {
+        switch(m){
+
+            case SOUTH:
+
+                origin = origin.moveBy(0, -1);
+                redraw();
+
+            case WEST:
+                origin = origin.moveBy(1, 0);
+                redraw();
+
+        }
+
+        if(m == Move.NORTH){
+            origin = origin.moveBy(0, 1);
+            redraw();
+        }
+
+        if(m == Move.EAST){
+            origin = origin.moveBy(-1, 0);
+            redraw();
+        }
+
+        if(m == Move.ZOOM_IN){
+
+        }
+
+        if(m == Move.ZOOM_OUT){
+
+        }
+
 
     }
 
@@ -94,15 +128,18 @@ public class TripPlanner extends GUI{
         for(Trips t : trips){
             ArrayList<Stops> stopSequence = t.getStops();
             for(int i = 0; i < stopSequence.size() - 1; i++){
-                Stops incoming = allStops.get(stopSequence.get(i));
-                Stops outgoing = allStops.get(stopSequence.get(i + 1));
+                Stops incoming = allStops.get(stopSequence.get(i).getID());
+                Stops outgoing = allStops.get(stopSequence.get(i + 1).getID());
+
                 Connections connections = new Connections(t.getID(), incoming, outgoing);
                 allConnections.add(connections);
 
+                stopSequence.get(i+1).Incoming.add(incoming);
+                stopSequence.get(i).Outgoing.add(outgoing);
+
+
             }
         }
-
-
 
         System.out.println("Stops: " + stopSet.size());
         System.out.println("Trips: "+ trips.size());
@@ -110,7 +147,6 @@ public class TripPlanner extends GUI{
 
         //Two for loops, one for looping through id, another for looping through the arraylist.
         //in the arraylist, use the map to access those stop objects and do connections.
-
 
     }
 
