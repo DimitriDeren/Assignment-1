@@ -17,24 +17,25 @@ public class Connections {
         this.id = idC;
         this.incoming = in;
         this.outgoing = out;
-
-
     }
 
     public Stops getIncoming(){return incoming;}
 
     public Stops getOutgoing(){return outgoing;}
 
-    public void draw(Graphics g, Location origin, double scale) {
+    public void draw(Graphics g, Location origin, double scale, Color colour) {
         this.in = incoming.getLocation().asPoint(origin, scale);
         this.out = outgoing.getLocation().asPoint(origin, scale);
-        g.setColor(Color.gray);
+        g.setColor(colour);
         g.drawLine(in.x, in.y, out.x, out.y);
     }
 
     public Point getIncomingPoint(){
         return in;
     }
+
+
+
 
 
 

@@ -8,12 +8,13 @@ public class Stops {
     private double lat;
     private double longi;
     private Location loc;
+    private boolean isClicked = false;
 
     ArrayList<Stops> Outgoing = new ArrayList<>();
     ArrayList<Stops> Incoming = new ArrayList<>();
 
 
-    private static final int SQUARE_SIZE = 3;
+
 
 
 
@@ -26,6 +27,8 @@ public class Stops {
 
     }
 
+    public String getName(){ return this.name; }
+
     public String getID(){
      return ID;
     }
@@ -36,11 +39,18 @@ public class Stops {
 
     public Location getLocation() {return loc;}
 
-
-    public void draw(Graphics g, Location origin, double scale) {
-        g.setColor(Color.red);
-        g.fillRect(loc.asPoint(origin, 10).x, loc.asPoint(origin, 10).y, SQUARE_SIZE, SQUARE_SIZE);
+    public void setClicked(){
+        if(!isClicked) {
+            isClicked = true;
+        } else if (isClicked){
+            isClicked = false;
+        }
     }
 
+
+    public void draw(Graphics g, Location origin, double scale, int squareSize, Color colour) {
+        g.setColor(colour);
+        g.fillRect(loc.asPoint(origin, scale).x, loc.asPoint(origin, scale).y, squareSize, squareSize);
+    }
 
 }
