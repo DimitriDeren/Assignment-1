@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class TripPlanner extends GUI{
 
     Location origin = new Location(-24,19);
     Location clickLocation;
+    Stops closestStop;
 
     double scale = 10;
     double ZOOM_FACTOR = 1.3;
@@ -25,19 +27,45 @@ public class TripPlanner extends GUI{
     private static int SQUARE_SIZE = 3;
     private JTextArea text = getTextOutputArea();
 
-
     String input;
     Trie trie = new Trie();
     Boolean prefix = false;
     ArrayList<Stops> stopSearch;
     String name = "";
-
+    
 
     protected void redraw(Graphics g) {
+
         for(Stops s : stopSet) {
-            s.draw(g, origin, scale, SQUARE_SIZE, Color.red);
+            s.draw(g, origin, scale, SQUARE_SIZE);
         }
 
+        for (Connections c : allConnections) {
+            c.draw(g, origin, scale);
+        }
+
+
+    }
+
+    public void unhighlightAll(){
+        for(Stops s : stopSet){
+            s.setHighlight(false);
+        }
+        for(Connections c : allConnections){
+            c.setHightlight(false);
+        }
+    }
+
+
+    /**
+     * Is called when the mouse is clicked (actually, when the mouse is
+     * released), and is passed the MouseEvent object for that click.
+     */
+    protected void onClick(MouseEvent e) {
+        unhighlightAll();
+
+        Point click = e.getPoint();
+        clickLocation = Location.newFromPoint(click, origin, scale);
         double distance = 10000;
         String append = "";
         if(clickLocation != null) {
@@ -48,52 +76,16 @@ public class TripPlanner extends GUI{
                     distance = stop.getLocation().distance(clickLocation);
                 }
             }
+            closestStop.setHighlight(true);
 
-            closestStop.draw(g, origin, scale, SQUARE_SIZE, Color.blue);
             for (Trips t : trips) {
                 ArrayList<Stops> stopSequence = t.getStops();
                 if(stopSequence.contains(closestStop)){
                     append += t.getID() + " ";
                     text.setText("Stop name : " + closestStop.getName() + "\nTrip IDs: " + append );
-
                 }
-
             }
         }
-
-        for (Connections c : allConnections) {
-            c.draw(g, origin, scale, Color.gray);
-            if(input != null){
-                if (c.getIncoming().getName().equals(input) || c.getOutgoing().getName().equals(input)) {
-                    c.draw(g, origin, scale, Color.blue);
-                    c.getIncoming().draw(g, origin, scale, SQUARE_SIZE, Color.blue);
-                    c.getOutgoing().draw(g, origin, scale, SQUARE_SIZE, Color.blue);
-                }
-
-            }
-        }
-
-        if(prefix){
-            for(int i = 0; i < stopSearch.size(); i++) {
-                stopSearch.get(i).draw(g, origin, scale, SQUARE_SIZE, Color.blue);
-                text.setText("Stop name result(s) : " + name);
-
-            }
-        }
-
-    }
-
-    //use a for loop for all the stops which calls a draw method within the stops class for each one, pass in origin, scale and graphics object
-
-
-
-    /**
-     * Is called when the mouse is clicked (actually, when the mouse is
-     * released), and is passed the MouseEvent object for that click.
-     */
-    protected void onClick(MouseEvent e) {
-        Point click = e.getPoint();
-        clickLocation = Location.newFromPoint(click, origin, scale);
     }
 
     /**
@@ -101,19 +93,34 @@ public class TripPlanner extends GUI{
      * JTextField object that is the search box itself.
      */
     protected void onSearch() {
+        unhighlightAll();
+
         JTextField userInput = getSearchBox();
         input = userInput.getText();
         stopSearch = trie.getAll(input.toCharArray());
         prefix = true;
+        name = "";
 
+        for (Connections c : allConnections) {
+
+            if (input != null) {
+                if (c.getIncoming().getName().equals(input) || c.getOutgoing().getName().equals(input)) {
+                    c.setHightlight(true);
+                    c.getIncoming().setHighlight(true);
+                    c.getOutgoing().setHighlight(true);
+                }
+            }
+        }
 
         if(!stopSearch.isEmpty()) {
             for (int i = 0; i < stopSearch.size(); i++) {
+                stopSearch.get(i).setHighlight(true);
                 name += stopSearch.get(i).getName() + " ";
             }
         }
 
-
+        text.setText("Stop name result(s) : " + name);
+        System.out.println(name);
     }
 
 
