@@ -13,11 +13,6 @@ public class Stops {
     ArrayList<Stops> Outgoing = new ArrayList<>();
     ArrayList<Stops> Incoming = new ArrayList<>();
 
-
-
-
-
-
     public Stops(String id, String name, double latitude, double longitude){
         this.ID = id;
         this.name = name;
@@ -39,12 +34,20 @@ public class Stops {
 
     public Location getLocation() {return loc;}
 
+    public void setHighlight(boolean b){
+        highlight = b;
+    }
 
+    public void draw(Graphics g, Location origin, double scale, int squareSize) {
+        if(!highlight) {
+            g.setColor(Color.red);
+            g.fillRect(loc.asPoint(origin, scale).x, loc.asPoint(origin, scale).y, squareSize, squareSize);
+        }
 
-    public void draw(Graphics g, Location origin, double scale, int squareSize, Color colour) {
-        g.setColor(colour);
-        
-        g.fillRect(loc.asPoint(origin, scale).x, loc.asPoint(origin, scale).y, squareSize, squareSize);
+        if(highlight){
+            g.setColor(Color.blue);
+            g.fillRect(loc.asPoint(origin, scale).x, loc.asPoint(origin, scale).y, squareSize, squareSize);
+        }
     }
 
 }

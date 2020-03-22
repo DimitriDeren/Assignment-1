@@ -138,6 +138,7 @@ public abstract class GUI {
 	private static final String STOP_FILENAME = "stops.txt";
 	private static final String TRIP_FILENAME = "trips.txt";
 
+
 	/*
 	 * In Swing, everything is a component; buttons, graphics panes, tool tips,
 	 * and the window frame are all components. This is implemented by
