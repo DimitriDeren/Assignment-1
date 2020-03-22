@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,14 +25,18 @@ public class TripPlanner extends GUI{
     private static int SQUARE_SIZE = 3;
     private JTextArea text = getTextOutputArea();
 
+
     String input;
+    Trie trie = new Trie();
+    Boolean prefix = false;
+    ArrayList<Stops> stopSearch;
+    String name = "";
 
 
     protected void redraw(Graphics g) {
-
         for(Stops s : stopSet) {
             s.draw(g, origin, scale, SQUARE_SIZE, Color.red);
-            }
+        }
 
         double distance = 10000;
         String append = "";
@@ -58,18 +61,25 @@ public class TripPlanner extends GUI{
             }
         }
 
-            for (Connections c : allConnections) {
-                c.draw(g, origin, scale, Color.gray);
-                if(input != null){
-                    if (c.getIncoming().getName().equals(input) || c.getOutgoing().getName().equals(input)) {
-                     c.draw(g, origin, scale, Color.blue);
-                     c.getIncoming().draw(g, origin, scale, SQUARE_SIZE, Color.blue);
-                     c.getOutgoing().draw(g, origin, scale, SQUARE_SIZE, Color.blue);
+        for (Connections c : allConnections) {
+            c.draw(g, origin, scale, Color.gray);
+            if(input != null){
+                if (c.getIncoming().getName().equals(input) || c.getOutgoing().getName().equals(input)) {
+                    c.draw(g, origin, scale, Color.blue);
+                    c.getIncoming().draw(g, origin, scale, SQUARE_SIZE, Color.blue);
+                    c.getOutgoing().draw(g, origin, scale, SQUARE_SIZE, Color.blue);
                 }
 
             }
         }
 
+        if(prefix){
+            for(int i = 0; i < stopSearch.size(); i++) {
+                stopSearch.get(i).draw(g, origin, scale, SQUARE_SIZE, Color.blue);
+                text.setText("Stop name result(s) : " + name);
+
+            }
+        }
 
     }
 
@@ -82,9 +92,8 @@ public class TripPlanner extends GUI{
      * released), and is passed the MouseEvent object for that click.
      */
     protected void onClick(MouseEvent e) {
-     Point click = e.getPoint();
-       clickLocation = Location.newFromPoint(click, origin, scale);
-        System.out.println(clickLocation);
+        Point click = e.getPoint();
+        clickLocation = Location.newFromPoint(click, origin, scale);
     }
 
     /**
@@ -94,7 +103,19 @@ public class TripPlanner extends GUI{
     protected void onSearch() {
         JTextField userInput = getSearchBox();
         input = userInput.getText();
+        stopSearch = trie.getAll(input.toCharArray());
+        prefix = true;
+
+
+        if(!stopSearch.isEmpty()) {
+            for (int i = 0; i < stopSearch.size(); i++) {
+                name += stopSearch.get(i).getName() + " ";
+            }
+        }
+
+
     }
+
 
     /**
      * Is called whenever a navigation button is pressed. An instance of the
@@ -186,6 +207,10 @@ public class TripPlanner extends GUI{
             allStops.put(a[0], stop);
             stopNames.put(a[1], stop);
             stopSet.add(stop);
+
+            char[] name = a[1].toCharArray();
+            trie.add(name, stop);
+
         }
 
         FileReader tf = new FileReader(tripFile);
@@ -220,9 +245,6 @@ public class TripPlanner extends GUI{
             }
         }
 
-        System.out.println("Stops: " + stopSet.size());
-        System.out.println("Trips: "+ trips.size());
-        System.out.println("Connections: "+ allConnections.size());
 
         //Two for loops, one for looping through id, another for looping through the arraylist.
         //in the arraylist, use the map to access those stop objects and do connections.

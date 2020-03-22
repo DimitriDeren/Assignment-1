@@ -8,7 +8,7 @@ public class Stops {
     private double lat;
     private double longi;
     private Location loc;
-    private boolean isClicked = false;
+    private boolean highlight = false;
 
     ArrayList<Stops> Outgoing = new ArrayList<>();
     ArrayList<Stops> Incoming = new ArrayList<>();
@@ -39,17 +39,11 @@ public class Stops {
 
     public Location getLocation() {return loc;}
 
-    public void setClicked(){
-        if(!isClicked) {
-            isClicked = true;
-        } else if (isClicked){
-            isClicked = false;
-        }
-    }
 
 
     public void draw(Graphics g, Location origin, double scale, int squareSize, Color colour) {
         g.setColor(colour);
+        
         g.fillRect(loc.asPoint(origin, scale).x, loc.asPoint(origin, scale).y, squareSize, squareSize);
     }
 
